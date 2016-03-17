@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cat <<-END
+{
+	"horizontal": true
+}
+END

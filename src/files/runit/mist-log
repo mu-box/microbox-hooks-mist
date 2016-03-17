@@ -1,0 +1,8 @@
+#!/bin/sh -e
+
+# create the log directory if it doesn't exist
+[ -d /var/log/gonano/mist ] || mkdir -p /var/log/gonano/mist %>
+
+# tell svlogd to drop the stdout into our custom location
+cd /var/log/gonano/mist
+exec svlogd -v -ttt /var/log/gonano/mist
