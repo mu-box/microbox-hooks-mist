@@ -10,19 +10,23 @@ require 'hookit/setup'
 # Stop mist
 service 'mist' do
   action :disable
+  not_if { !Dir.exist?('/etc/service/mist') }
 end
 
 # Remove mist runit definition
 directory '/etc/service/mist' do
   action :delete
+  not_if { !Dir.exist?('/etc/service/mist') }
 end
 
 # Stop narc
 service 'narc' do
   action :disable
+  not_if { !Dir.exist?('/etc/service/narc') }
 end
 
 # Remove narc runit definition
 directory '/etc/service/narc' do
   action :delete
+  not_if { !Dir.exist?('/etc/service/narc') }
 end
