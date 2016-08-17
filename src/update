@@ -14,7 +14,7 @@ mist_latest=$(cat /var/nanobox/mist.md5)
 if [ ! "$mist_installed" = "$mist_latest" ]; then
   echo "Mist is out of date, updating to latest"
   # stop the running Nanoagent
-  sv mist stop
+  sv stop mist
   # download the latest version
   curl \
     -f \
@@ -24,7 +24,7 @@ if [ ! "$mist_installed" = "$mist_latest" ]; then
   # update permissions
   chmod 755 /usr/local/bin/mist
   # start the new version
-  sv mist start
+  sv start mist
 else
   echo "Mist is up to date."
 fi
