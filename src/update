@@ -13,7 +13,7 @@ local_mist_md5 = execute "local mist md5" do
 end
 
 aws_mist_md5 = execute "aws mist md5" do
-  command <<-END 
+  command <<-END
     bash -c 'curl \
       -f \
       -k \
@@ -30,17 +30,17 @@ if local_mist_md5 != aws_mist_md5
   end
 
   execute "Download mist" do
-    command <<-END 
+    command <<-END
       bash -c 'curl \
         -f \
         -k \
-        -o /usr/local/bin/mist
+        -o /usr/local/bin/mist \
         https://d3ep67zochz54j.cloudfront.net/mist/linux/amd64/mist'
     END
   end
 
   execute "Chmod mist" do
-    command <<-END 
+    command <<-END
       bash -c 'chmod 755 /usr/local/bin/mist'
     END
   end
