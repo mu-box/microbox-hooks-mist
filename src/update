@@ -18,7 +18,7 @@ aws_mist_md5 = execute "aws mist md5" do
       -f \
       -k \
       https://d3ep67zochz54j.cloudfront.net/mist/linux/amd64/mist.md5 \
-        | tee /var/nanobox/mist.md5'
+        | tee /tmp/mist.md5'
   END
 end
 
@@ -48,6 +48,12 @@ if local_mist_md5 != aws_mist_md5
   service 'mist' do
     action :enable
     not_if { !Dir.exist?('/etc/service/mist') }
+  end
+
+  execute "Finalize update" do
+    command <<-END
+      bash -c 'mv /tmp/mist.md5 /var/nanobox/mist.md5'
+    END
   end
 end
 
