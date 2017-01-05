@@ -64,7 +64,7 @@ aws_hooks_md5 = execute "aws hooks md5" do
       -f \
       -k \
       https://d1ormdui8qdvue.cloudfront.net/hooks/mist-stable.md5 \
-        | tee /var/nanobox/hooks.md5
+        | tee /tmp/hooks.md5
   END
 end
 
@@ -77,5 +77,9 @@ if local_hooks_md5 != aws_hooks_md5
         https://d1ormdui8qdvue.cloudfront.net/hooks/mist-stable.tgz \
           | tar -xz -C /opt/nanobox/hooks
     END
+  end
+
+  execute "Finalize update" do
+    command "mv /tmp/hooks.md5 /var/nanobox/hooks.md5"
   end
 end
