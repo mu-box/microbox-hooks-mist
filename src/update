@@ -13,12 +13,12 @@ local_mist_md5 = execute "local mist md5" do
 end
 
 aws_mist_md5 = execute "aws mist md5" do
-  command <<-END 
-    bash -c 'curl \
+  command <<-END
+    curl \
       -f \
       -k \
       https://d3ep67zochz54j.cloudfront.net/mist/linux/amd64/mist.md5 \
-        | tee /var/nanobox/mist.md5'
+        | tee /tmp/mist.md5
   END
 end
 
@@ -30,24 +30,26 @@ if local_mist_md5 != aws_mist_md5
   end
 
   execute "Download mist" do
-    command <<-END 
-      bash -c 'curl \
+    command <<-END
+      curl \
         -f \
         -k \
-        -o /usr/local/bin/mist
-        https://d3ep67zochz54j.cloudfront.net/mist/linux/amd64/mist'
+        -o /usr/local/bin/mist \
+        https://d3ep67zochz54j.cloudfront.net/mist/linux/amd64/mist
     END
   end
 
   execute "Chmod mist" do
-    command <<-END 
-      bash -c 'chmod 755 /usr/local/bin/mist'
-    END
+    command "chmod 755 /usr/local/bin/mist"
   end
 
   service 'mist' do
     action :enable
     not_if { !Dir.exist?('/etc/service/mist') }
+  end
+
+  execute "Finalize update" do
+    command "mv /tmp/mist.md5 /var/nanobox/mist.md5"
   end
 end
 
@@ -58,22 +60,26 @@ end
 
 aws_hooks_md5 = execute "aws hooks md5" do
   command <<-END
-    bash -c 'curl \
+    curl \
       -f \
       -k \
       https://d1ormdui8qdvue.cloudfront.net/hooks/mist-stable.md5 \
-        | tee /var/nanobox/hooks.md5'
+        | tee /tmp/hooks.md5
   END
 end
 
 if local_hooks_md5 != aws_hooks_md5
   execute "update hooks" do
     command <<-END
-      bash -c 'curl \
-          -f \
-          -k \
-          https://d1ormdui8qdvue.cloudfront.net/hooks/mist-stable.tgz \
-            | tar -xz -C /opt/nanobox/hooks'
+      curl \
+        -f \
+        -k \
+        https://d1ormdui8qdvue.cloudfront.net/hooks/mist-stable.tgz \
+          | tar -xz -C /opt/nanobox/hooks
     END
+  end
+
+  execute "Finalize update" do
+    command "mv /tmp/hooks.md5 /var/nanobox/hooks.md5"
   end
 end
