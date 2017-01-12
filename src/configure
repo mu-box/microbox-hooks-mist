@@ -32,6 +32,26 @@ template '/opt/gonano/etc/narc.conf' do
     uid: payload[:component][:uid], logvac: payload[:logvac_host]
   })
 end
+# ensure log files are created
+["/var/log/gonano/mist/current", "/var/log/mist.log"].each do |log_file|
+  if not ::File.exists? "#{log_file}"
+    parent = File.expand_path("..", "#{log_file}")
+    
+    # create the parent directory
+    directory parent do
+      owner 'gonano'
+      group 'gonano'
+      recursive true
+    end
+    
+    # create the log_file
+    file "#{log_file}" do
+      owner 'gonano'
+      group 'gonano'
+      mode  0644
+    end
+  end
+end
 
 if payload[:platform] != 'local'
 
